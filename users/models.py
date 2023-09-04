@@ -12,6 +12,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=100, **NULLABLE, verbose_name='Фамилия')
     avatar = models.ImageField(upload_to='users/', **NULLABLE, verbose_name='Аватар')
     comment = models.TextField(**NULLABLE, verbose_name='Описание')
+    phone_number = models.CharField(max_length=20, **NULLABLE, verbose_name='Телефон')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
