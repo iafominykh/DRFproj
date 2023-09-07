@@ -1,0 +1,43 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2002-10-10T12:00:00-05:00",
+      "email": "testo@mail.ru",
+      "phone_number": "7987654321",
+      "comment": "Best test",
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T16:33:04+03:00",
+      "email": "test@test.com",
+      "phone_number": "7123456789",
+      "comment": "Test much better",
+      "avatar": "",
+	  "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

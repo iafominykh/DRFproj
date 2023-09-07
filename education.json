@@ -1,0 +1,124 @@
+[
+  {
+    "model": "education.course",
+    "pk": 2,
+    "fields": {
+      "title": "english",
+      "preview": "",
+      "description": "english"
+    }
+  },
+  {
+    "model": "education.course",
+    "pk": 3,
+    "fields": {
+      "title": "Deutsch",
+      "preview": "",
+      "description": "Deutsch"
+    }
+  },
+  {
+    "model": "education.lesson",
+    "pk": 2,
+    "fields": {
+      "title": "lesson 1",
+      "description": "english base",
+      "preview": "",
+      "link": null,
+      "course": 2
+    }
+  },
+  {
+    "model": "education.lesson",
+    "pk": 3,
+    "fields": {
+      "title": "lesson 2",
+      "description": "english base2",
+      "preview": "",
+      "link": null,
+      "course": 2
+    }
+  },
+  {
+    "model": "education.lesson",
+    "pk": 4,
+    "fields": {
+      "title": "lesson 3",
+      "description": "english base3",
+      "preview": "",
+      "link": null,
+      "course": 2
+    }
+  },
+  {
+    "model": "education.lesson",
+    "pk": 5,
+    "fields": {
+      "title": "lesson 1",
+      "description": "Deutsch base",
+      "preview": "",
+      "link": null,
+      "course": 3
+    }
+  },
+  {
+    "model": "education.payments",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "payment_date": "2008-01-25",
+      "course": 2,
+      "lesson": null,
+      "payment_amount": 50000,
+      "payment_method": "cash"
+    }
+  },
+  {
+    "model": "education.payments",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "payment_date": "2008-01-25",
+      "course": null,
+      "lesson": 2,
+      "payment_amount": 1000,
+      "payment_method": "cash"
+    }
+  },
+  {
+    "model": "education.payments",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "payment_date": "2008-01-25",
+      "course": null,
+      "lesson": 3,
+      "payment_amount": 1000,
+      "payment_method": "transfer"
+    }
+  },
+  {
+    "model": "education.payments",
+    "pk": 4,
+    "fields": {
+      "user": 2,
+      "payment_date": "2018-07-09",
+      "course": 3,
+      "lesson": null,
+      "payment_amount": 100000,
+      "payment_method": "transfer"
+    }
+  },
+  {
+    "model": "education.payments",
+    "pk": 5,
+    "fields": {
+      "user": 2,
+      "payment_date": "2018-07-09",
+      "course": null,
+      "lesson": 5,
+      "payment_amount": 5000,
+      "payment_method": "transfer"
+    }
+  }
+]
