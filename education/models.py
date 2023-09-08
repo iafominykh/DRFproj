@@ -7,6 +7,7 @@ class Course(models.Model):
     title = models.CharField(max_length=100, verbose_name='название')
     preview = models.ImageField(upload_to='education/', **NULLABLE, verbose_name='превью')
     description = models.TextField(**NULLABLE, verbose_name='описание')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Создатель', **NULLABLE)
 
     def __str__(self):
         return f'{self.title}'
@@ -20,8 +21,9 @@ class Lesson(models.Model):
     title = models.CharField(max_length=100, verbose_name='название')
     description = models.TextField(**NULLABLE, verbose_name='описание')
     preview = models.ImageField(upload_to='education/', **NULLABLE, verbose_name='превью')
-    link = models.URLField(verbose_name='ссылка на видео',**NULLABLE)
+    link = models.URLField(verbose_name='ссылка на видео', **NULLABLE)
     course = models.ForeignKey(Course, **NULLABLE, on_delete=models.CASCADE, verbose_name='Урок курса')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Создатель', **NULLABLE)
 
     def __str__(self):
         return f'{self.title}: {self.link}'
@@ -53,4 +55,3 @@ class Payments(models.Model):
     class Meta:
         verbose_name = 'Платеж'
         verbose_name_plural = 'Платежи'
-
