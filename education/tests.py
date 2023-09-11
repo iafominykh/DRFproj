@@ -6,7 +6,7 @@ from users.models import User, UserRoles
 
 class LessonTestCase(APITestCase):
     def setUp(self) -> None:
-        """заполнение первичных данных"""
+        """Заполнение первичных данных"""
         self.user = User.objects.create(
             email='test@test.com',
             is_staff=False,
@@ -50,7 +50,7 @@ class LessonTestCase(APITestCase):
 
 class SubscriptionTest(APITestCase):
     def setUp(self) -> None:
-        """заполнение первичных данных"""
+        """Заполнение первичных данных"""
         self.course = Course.objects.create(
             title='test_course',
             description='test_course'
