@@ -1,11 +1,13 @@
 from rest_framework import serializers
 
-from education.models import Course, Lesson, Payments
+from education.models import Course, Lesson, Payments, Subscription
+from education.validators import VideoValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
+        validators = [VideoValidator(field='video')]
         fields = '__all__'
 
 
@@ -28,3 +30,8 @@ class PaymentsSerializers(serializers.ModelSerializer):
     class Meta:
         model = Payments
         fields = "__all__"
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = '__all__'
