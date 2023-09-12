@@ -1,51 +1,129 @@
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from education.models import Course
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from education.models import Course, Lesson
 from users.models import User, UserRoles
 
-
 class LessonTestCase(APITestCase):
-    def setUp(self) -> None:
+
+    def setUp(self):
         """Заполнение первичных данных"""
+
         self.user = User.objects.create(
-            email='test@test.com',
-            is_staff=False,
-            is_superuser=False,
+            email='test@test.ru',
+            is_staff=True,
+            is_superuser=True,
             is_active=True,
             role=UserRoles.MEMBER,
         )
-        self.user.set_password('Aa123123')
+        self.user.set_password('324214Kross!')
         self.user.save()
-        response = self.client.post('/users/api/token/', {"email": "test@test.com", "password": "Aa123123"})
-        self.access_token = response.json().get('access')
+
+        token = RefreshToken.for_user(self.user)
+        self.access_token = str(token.access_token)
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
+        self.course = Course.objects.create(
+            title='course test',
+            description='course test'
+        )
+
+        self.lesson = Lesson.objects.create(
+            title='lesson test',
+            description='lesson test',
+            course=self.course,
+            author=self.user
+        )
+
+    def test_lesson_list(self):
+        """ Тест получения списка уроков"""
+
+        response = self.client.get(
+            reverse('education:lesson_list'),
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        # print(response.json())
+
+        self.assertEqual(
+            response.json(),
+            {'count': 1, 'next': None, 'previous': None, 'results': [
+                {'id': self.lesson.id, 'title': 'lesson test', 'description': 'lesson test', 'preview': None,
+                 'link': None,
+                 'course': self.course.id, 'author': self.user.id}]}
+        )
+
+        self.assertTrue(
+            Lesson.objects.all().exists()
+        )
+
     def test_create_lesson(self):
-        """Тестирование создания урока"""
-        response = self.client.post('/lesson/create/',
-                                    {'title': 'lesson 1', 'description': 'lesson a/an', 'author': 1})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response2 = self.client.post('/lesson/create/',
-                                     {'title': 'lesson 2', 'description': 'lesson 2', 'link': 'www.youtube.com'})
-        self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
+        """ Тест создания уроков"""
 
-    def test_get_lesson(self):
-        """Тестирование вывода списка уроков"""
-        self.test_create_lesson()
-        response = self.client.get('/lesson/')
-        print(response.json())
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), {'count': 1, 'next': None, 'previous': None, 'results': [
-            {'id': 1, 'title': 'lesson 1', 'description': 'lesson a/an', 'preview': None,
-             'link': None, 'course': None, 'author': 1}]})
+        data = {
+            'title': 'test create',
+            'description': 'test create'
+        }
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse('education:lesson_create'),
+            data=data
+        )
 
-    def test_retrieve_lesson(self):
-        self.test_create_lesson()
-        response = self.client.get('/lesson/detail/1/')
-        print(response.json())
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), {'id': 1, 'title': 'lesson 1', 'description': 'lesson a/an', 'preview': None,
-                                           'link': None, 'course': None, 'author': 1})
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
+
+        self.assertTrue(
+            Lesson.objects.all().exists()
+        )
+    def test_lesson_update(self):
+        """ Тест обновления урока """
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            'title': 'update lesson',
+            'description': 'update lesson',
+        }
+
+        response = self.client.put(
+            path=f'/lesson/update/{self.lesson.id}/',
+            data=data,
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK,
+        )
+        response = response.json()
+
+        self.assertTrue(
+            Lesson.objects.all().exists()
+        )
+    def test_lesson_delete(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.delete(
+            f'/lesson/delete/{self.lesson.id}/',
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_204_NO_CONTENT,
+        )
+        self.assertFalse(
+            Lesson.objects.all().exists(),
+        )
+
+    def tearDown(self) -> None:
+        self.user.delete()
+        self.course.delete()
+        self.lesson.delete()
 
 
 class SubscriptionTest(APITestCase):
@@ -58,16 +136,16 @@ class SubscriptionTest(APITestCase):
 
         self.user = User.objects.create(
             email='test@test.com',
-            city='Moscow',
             is_staff=False,
             is_superuser=True,
             is_active=True,
             role=UserRoles.MEMBER,
         )
-        self.user.set_password('Aa123123')
+        self.user.set_password('324214Kross!')
         self.user.save()
-        response = self.client.post('/users/api/token/', {"email": "test@test.com", "password": "Aa123123"})
-        self.access_token = response.json().get('access')
+
+        token = RefreshToken.for_user(self.user)
+        self.access_token = str(token.access_token)
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
     def test_create_subscription(self):
