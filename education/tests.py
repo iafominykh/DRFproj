@@ -84,7 +84,28 @@ class LessonTestCase(APITestCase):
         self.assertTrue(
             Lesson.objects.all().exists()
         )
+    def test_lesson_update(self):
+        """ Тест обновления урока """
+        self.client.force_authenticate(user=self.user)
 
+        data = {
+            'title': 'update lesson',
+            'description': 'update lesson',
+        }
+
+        response = self.client.put(
+            path=f'/lesson/update/{self.lesson.id}/',
+            data=data,
+        )
+
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK,
+        )
+        response = response.json()
+
+        self.assertTrue(
+            Lesson.objects.all().exists()
+        )
     def test_lesson_delete(self):
         self.client.force_authenticate(user=self.user)
 
