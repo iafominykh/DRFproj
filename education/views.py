@@ -2,15 +2,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics, status
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from config import settings
+
+
 
 from education.models import Course, Lesson, Payments
 from education.paginators import Pagination
-from education.serializers import CourseSerializer, LessonSerializer, PaymentsSerializers, SubscriptionSerializer, \
-    PaymentCreateSerializer
+from education.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer, \
+    PaymentCreateSerializer,  PaymentRetrieveSerializer, PaymentUpdateSerializer
 from education.permissions import IsOwner, IsModerator
-from education.services import checkout_session, create_payment
+
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -25,7 +25,9 @@ class LessonCreateAPIView(generics.CreateAPIView):
     queryset = Lesson.objects.all()
     permission_classes = [IsModerator]
 
+
 class LessonListAPIView(generics.ListAPIView):
+    """Список уроков"""
     serializer_class = LessonSerializer
     pagination_class = Pagination
     queryset = Lesson.objects.all()
@@ -57,22 +59,26 @@ class PaymentsListView(generics.ListAPIView):
     ordering_fields = ['payment_date']
 
 
+class PaymentCreateAPIView(generics.CreateAPIView):
+    """
+    API endpoint that allows users to create payments.
+    """
+    serializer_class = PaymentCreateSerializer
 
-
-class PaymentsCreateView(generics.CreateAPIView):
-    serializer_class = PaymentsSerializers
+class PaymentRetrieveAPIView(generics.RetrieveAPIView):
+    """
+    API endpoint that allows users to retrieve payment.
+    """
+    serializer_class = PaymentRetrieveSerializer
     queryset = Payments.objects.all()
-    def post(self, request, *args, **kwargs):
-        """Создание платежа"""
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        session = checkout_session(
-            course=serializer.validated_data['course'],
-            user=self.request.user
-        )
-        create_payment(course=serializer.validated_data['course'],
-                       user=self.request.user)
-        return Response(session['id'], status=status.HTTP_201_CREATED)
+
+
+class PaymentUpdateAPIView(generics.UpdateAPIView):
+    """
+    API endpoint that allows users to update payment.
+    """
+    serializer_class = PaymentUpdateSerializer
+    queryset = Payments.objects.all()
 
 class SubscriptionCreateAPIView(generics.CreateAPIView):
     serializer_class = SubscriptionSerializer

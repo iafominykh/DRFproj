@@ -36,21 +36,22 @@ class Lesson(models.Model):
 
 
 class Payments(models.Model):
-    CASH = 'cash'
-    TRANSFER = 'transfer'
-    PAYMENT_CHOICES = [
-        (CASH, 'cash'),
-        (TRANSFER, 'transfer')
-    ]
+    CARD = "Безналичный"
+    CASH = "Наличные"
 
+    PAYMENT_METHOD = [
+        (CARD, "Безналичный"),
+        (CASH, "Наличные"),
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', **NULLABLE)
     payment_date = models.DateField(auto_now_add=True, verbose_name='Дата оплаты')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
     payment_amount = models.IntegerField(verbose_name='Сумма оплаты')
-    payment_method = models.CharField(choices=PAYMENT_CHOICES, max_length=20, default=CASH,
+    payment_method = models.CharField(choices=PAYMENT_METHOD, max_length=20, default=CASH,
                                       verbose_name='Способ оплаты')
-
+    is_paid = models.BooleanField(default=False, verbose_name="оплачено")
+    payment_intent_id = models.CharField(default='NULL', max_length=100, verbose_name="id_платежа")
     def __str__(self):
         return f'{self.user} - {self.payment_date}'
 
