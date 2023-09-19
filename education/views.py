@@ -3,14 +3,12 @@ from rest_framework import viewsets, generics, status
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
-
-
+from education.tasks import send_email
 from education.models import Course, Lesson, Payments
 from education.paginators import Pagination
 from education.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer, \
-    PaymentCreateSerializer,  PaymentRetrieveSerializer, PaymentUpdateSerializer
+    PaymentCreateSerializer, PaymentRetrieveSerializer, PaymentUpdateSerializer
 from education.permissions import IsOwner, IsModerator
-
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -18,6 +16,10 @@ class CourseViewSet(viewsets.ModelViewSet):
     pagination_class = Pagination
     queryset = Course.objects.all()
     permission_classes = [IsModerator | IsOwner]
+
+    def update(self, request, *args, **kwargs):
+        send_email.delay(kwargs['pk'])
+        return super().update(request, *args, **kwargs)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -65,6 +67,7 @@ class PaymentCreateAPIView(generics.CreateAPIView):
     """
     serializer_class = PaymentCreateSerializer
 
+
 class PaymentRetrieveAPIView(generics.RetrieveAPIView):
     """
     API endpoint that allows users to retrieve payment.
@@ -79,6 +82,7 @@ class PaymentUpdateAPIView(generics.UpdateAPIView):
     """
     serializer_class = PaymentUpdateSerializer
     queryset = Payments.objects.all()
+
 
 class SubscriptionCreateAPIView(generics.CreateAPIView):
     serializer_class = SubscriptionSerializer
