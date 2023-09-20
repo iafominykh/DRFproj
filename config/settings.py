@@ -172,7 +172,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=1),
     },
 }
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
