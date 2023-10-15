@@ -158,17 +158,17 @@ CORS_ALLOW_ALL_ORIGINS = False
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 Sid = 'evt_3Nrh1nKshfEsw7jT1QRPuRUa'
 
-CELERY_BROKER_URL = 'redis://localhost:6379' # Например, Redis, который по умолчанию работает на порту 6379
+CELERY_BROKER_URL = 'redis://redis:6379/0' # Например, Redis, который по умолчанию работает на порту 6379
 
 # URL-адрес брокера результатов, также Redis
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TIMEZONE = 'Europe/Moscow'
 
 
 CELERY_BEAT_SCHEDULE = {
     'task-name': {
-        'task': 'course.tasks.check_user',
+        'task': 'education.tasks.check_user',
         'schedule': timedelta(minutes=1),
     },
 }
